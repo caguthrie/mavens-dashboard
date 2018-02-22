@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  real_name: MyString
+  username: MyString
+  email: MyString
+  going_to_game: false
+
+two:
+  real_name: MyString
+  username: MyString
+  email: MyString
+  going_to_game: false
