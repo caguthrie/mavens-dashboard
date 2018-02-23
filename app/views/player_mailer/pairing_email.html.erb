@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+  </head>
+  <body>
+    <% if @to.length == 1 %>
+      <% @from.each do |from_payment| %>
+        <p>
+          <%= from_payment[:player].real_name %> please pay
+          <%= @to[0][:player].real_name %>
+          $<%= from_payment[:amount] %>
+        </p>
+      <% end %>
+    <% else %>
+      <% @to.each do |to_payment| %>
+        <p>
+          <%= @from[0][:player].real_name %> please pay
+          <%= to_payment[:player].real_name %>
+          $<%= to_payment[:amount] %>
+        </p>
+      <% end %>
+    <% end %>
+    <br/>
+    <p>
+      You can use Paypal, Quickpay, Pop, Venmo, cash or check work it out yourselves.
+    </p>
+    <p>
+      Please note that all balances are immediately reflected as paid online, so please let me know when payment are received so I can mark them as paid.
+    </p>
+  </body>
+</html>

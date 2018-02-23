@@ -1,13 +1,9 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Players</h1>
-<%= link_to 'Create New Player', new_player_path %>
-<br>
-<br>
+<%= link_to 'Back to Main Menu', root_path %>
 
-<%= form_tag 'players/deselect_all' do %>
-  <%= submit_tag 'Deselect All and Save' %>
-<% end %>
+<h1>Players</h1>
+<br>
 
 <%= form_tag 'players/update_all' do %>
   <table>
@@ -39,5 +35,9 @@
   </table>
 
   <br>
-  <%= submit_tag %>
+  <%= submit_tag 'Submit Changes', class: 'ui primary button' %>
+<% end %>
+<br>
+<%= form_tag 'players/deselect_all' do %>
+  <%= submit_tag 'Deselect All and Save', class: 'ui orange button' %>
 <% end %>
