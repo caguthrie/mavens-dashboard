@@ -5,7 +5,7 @@ A web solution for managing Mavens player lists and balance resolution
 ## Installation
  
 1) Run `bundle install`
-2) Create `secrets.yaml` file with the following:
+2) Create `secrets.yml` file with the following:
     ```
     root: mavens url root
     password: your password
