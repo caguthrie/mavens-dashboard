@@ -31,6 +31,12 @@
     <%= f.check_box :going_to_game %>
   </div>
 
+
+  <div class="field">
+    <%= f.label 'Friendships' %>
+    <%= f.collection_select(:friends, Player.all.reject{|p| p.id == player.id}, :id, :real_name, {include_blank: true, selected: player.friends.map(&:id)}, {multiple: true}) %>
+  </div>
+
   <div class="actions">
     <%= f.submit %>
   </div>

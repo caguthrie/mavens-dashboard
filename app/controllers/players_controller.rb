@@ -42,6 +42,16 @@ class PlayersController < ApplicationController
   def update
     respond_to do |format|
       if @player.update(player_params)
+
+        # Deal with friends
+        new_friend_set = params[:player]['friends'].reject{|s| s.empty?}.map{|friend_id| Player.find(friend_id)}
+        this_player = Player.find(params[:id])
+        current_friends = this_player.friends
+        subtractions = current_friends - new_friend_set
+        additions = new_friend_set - current_friends
+        subtractions.each{|sub| this_player.friends.destroy sub}
+        additions.each{|add| this_player.friends << add}
+
         format.html { redirect_to @player, notice: 'Player was successfully updated.' }
         format.json { render :show, status: :ok, location: @player }
       else
