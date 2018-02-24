@@ -1,6 +1,5 @@
 require 'net/http'
 
-
 MINIMUM_BALANCE_THRESHOLD = 100
 
 module PairingHelper
@@ -40,33 +39,12 @@ module PairingHelper
           to: [],
           from: []
       }
-      pb_not_going_to_game.each do |pb2|
-        # If player 1 is a winner and we found a loser with a whole balance to match
-        if pb1[:balance] > MINIMUM_BALANCE_THRESHOLD && pb2[:balance] < -MINIMUM_BALANCE_THRESHOLD && pb1[:balance].abs > pb2[:balance].abs
-          player_pairing[:amount] = player_pairing[:amount] + pb2[:balance].abs
-          pairing[:from].push({player: pb2[:player], amount: pb2[:balance].abs})
-          pb1[:balance] = pb1[:balance] - pb2[:balance]
-          pb2[:balance] = 0
-        # If player 1 is a loser and we found a winner with a whole balance to match
-        elsif pb1[:balance] < -MINIMUM_BALANCE_THRESHOLD && pb2[:balance] > MINIMUM_BALANCE_THRESHOLD && pb1[:balance].abs > pb2[:balance].abs
-         player_pairing[:amount] = player_pairing[:amount] + pb2[:balance]
-         pairing[:to].push({player: pb2[:player], amount: pb2[:balance]})
-         pb1[:balance] = pb1[:balance] + pb2[:balance]
-         pb2[:balance] = 0
-        # If player 1 is a winner and we found a loser with a larger balance to match
-        elsif pb1[:balance] > MINIMUM_BALANCE_THRESHOLD && pb2[:balance] < -MINIMUM_BALANCE_THRESHOLD
-          player_pairing[:amount] = player_pairing[:amount] + pb1[:balance]
-          pairing[:from].push({player: pb2[:player], amount: pb1[:balance]})
-          pb2[:balance] = pb2[:balance] + pb1[:balance]
-          pb1[:balance] = 0
-        # If player 1 is a loser and we found a winner with a larger balance to match
-        elsif pb1[:balance] < -MINIMUM_BALANCE_THRESHOLD && pb2[:balance] > MINIMUM_BALANCE_THRESHOLD
-          player_pairing[:amount] = player_pairing[:amount] + pb1[:balance].abs
-          pairing[:to].push({player: pb2[:player], amount: pb1[:balance].abs})
-          pb2[:balance] = pb2[:balance] + pb1[:balance]
-          pb1[:balance] = 0
-        end
-      end
+
+      #Pair off against friends first
+      pair_off(pb1, pb_not_going_to_game.select{|pb2| pb1[:player].friends.include? pb2[:player]}, player_pairing, pairing)
+
+      #Pair off against everyone else
+      pair_off(pb1, pb_not_going_to_game, player_pairing, pairing)
 
       if type == 'winner'
         pairing[:to].push player_pairing
@@ -78,5 +56,35 @@ module PairingHelper
     end
 
 
+  end
+
+  def pair_off(pb1, list_of_hopefuls, player_pairing, pairing)
+    list_of_hopefuls.each do |pb2|
+      # If player 1 is a winner and we found a loser with a whole balance to match
+      if pb1[:balance] > MINIMUM_BALANCE_THRESHOLD && pb2[:balance] < -MINIMUM_BALANCE_THRESHOLD && pb1[:balance].abs > pb2[:balance].abs
+        player_pairing[:amount] = player_pairing[:amount] + pb2[:balance].abs
+        pairing[:from].push({player: pb2[:player], amount: pb2[:balance].abs})
+        pb1[:balance] = pb1[:balance] + pb2[:balance]
+        pb2[:balance] = 0
+        # If player 1 is a loser and we found a winner with a whole balance to match
+      elsif pb1[:balance] < -MINIMUM_BALANCE_THRESHOLD && pb2[:balance] > MINIMUM_BALANCE_THRESHOLD && pb1[:balance].abs > pb2[:balance].abs
+        player_pairing[:amount] = player_pairing[:amount] + pb2[:balance]
+        pairing[:to].push({player: pb2[:player], amount: pb2[:balance]})
+        pb1[:balance] = pb1[:balance] + pb2[:balance]
+        pb2[:balance] = 0
+        # If player 1 is a winner and we found a loser with a larger balance to match
+      elsif pb1[:balance] > MINIMUM_BALANCE_THRESHOLD && pb2[:balance] < -MINIMUM_BALANCE_THRESHOLD
+        player_pairing[:amount] = player_pairing[:amount] + pb1[:balance]
+        pairing[:from].push({player: pb2[:player], amount: pb1[:balance]})
+        pb2[:balance] = pb2[:balance] + pb1[:balance]
+        pb1[:balance] = 0
+        # If player 1 is a loser and we found a winner with a larger balance to match
+      elsif pb1[:balance] < -MINIMUM_BALANCE_THRESHOLD && pb2[:balance] > MINIMUM_BALANCE_THRESHOLD
+        player_pairing[:amount] = player_pairing[:amount] + pb1[:balance].abs
+        pairing[:to].push({player: pb2[:player], amount: pb1[:balance].abs})
+        pb2[:balance] = pb2[:balance] + pb1[:balance]
+        pb1[:balance] = 0
+      end
+    end
   end
 end
