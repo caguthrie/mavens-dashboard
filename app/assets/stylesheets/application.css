@@ -13,3 +13,8 @@
  *= require_tree .
  *= require_self
  */
+
+.friends-selector{
+    width: 100px;
+    height: 300px;
+}

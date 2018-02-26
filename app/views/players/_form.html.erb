@@ -34,7 +34,7 @@
 
   <div class="field">
     <%= f.label 'Friendships' %>
-    <%= f.collection_select(:friends, Player.all.reject{|p| p.id == player.id}, :id, :real_name, {include_blank: true, selected: player.friends.map(&:id)}, {multiple: true}) %>
+    <%= f.collection_select(:friends, Player.all.reject{|p| p.id == player.id}.sort { |a, b|  a.username.upcase <=> b.username.upcase }, :id, :username, {include_blank: true, selected: player.friends.map(&:id)}, {multiple: true, class: 'friends-selector'}) %>
   </div>
 
   <div class="actions">

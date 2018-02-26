@@ -5,5 +5,5 @@ Rails.application.routes.draw do
   post '/players/deselect_all' => 'players#deselect_all'
 
   get '/sync' => 'sync#index'
-  get '/pairing' => 'pairing#index'
+  get '/pairings' => 'pairings#index'
 end

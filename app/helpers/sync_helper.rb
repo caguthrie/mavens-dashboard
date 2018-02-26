@@ -1,14 +1,11 @@
 require 'net/http'
+load 'http_request.rb'
 
 module SyncHelper
   def sync_with_mavens
     config=YAML.load_file('secrets.yml')
-    url = URI.parse("#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsList&Fields=Player,RealName,Email")
-    req = Net::HTTP::Get.new(url.to_s)
-    res = Net::HTTP.start(url.host, url.port) {|http|
-      http.request(req)
-    }
-    data = JSON.parse res.body
+    url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsList&Fields=Player,RealName,Email"
+      data = HttpRequest.get url
     data["Player"].each_with_index do |player, i|
       player_from_db = Player.find_by(username: player)
       if player_from_db

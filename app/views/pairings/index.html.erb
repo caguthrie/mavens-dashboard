@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<%= link_to 'Back to Main Menu', root_path %>
+
+<h1>Pairings</h1>
+<br>
+
+<h2>Grouped by people getting paid:</h2>
+<% @to_aggregate.each do |username, agg| %>
+  <p>
+    <%= username %> is owed <%= agg[:balance] %> and will get:
+    <ul>
+      <% agg[:from].each do |from| %>
+        <li>
+          <%= from[:amount] %> from <%= from[:username] %>
+        </li>
+      <% end %>
+    </ul>
+  </p>
+<% end %>
+
+<h2>Grouped by people paying out:</h2>
+<% @from_aggregate.each do |username, agg| %>
+  <p>
+    <%= username %> owes <%= agg[:balance] %> and will pay out:
+    <ul>
+      <% agg[:to].each do |to| %>
+        <li>
+          <%= to[:amount] %> to <%= to[:username] %>
+        </li>
+      <% end %>
+    </ul>
+  </p>
+<% end %>
