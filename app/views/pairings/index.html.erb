@@ -2,11 +2,29 @@
 
 <%= link_to 'Back to Main Menu', root_path %>
 
-<h1>Pairings</h1>
+
+
+<h1>To take care of at live game</h1>
+<% @collect_at_game.sort!{|a,b| a[:player].real_name <=> b[:player].real_name}.each do |collection| %>
+  <p>
+    <ul>
+      <li>
+        <% if collection[:balance] < 0 %>
+          Collect <%= collection[:balance].abs %> from <%= collection[:player].real_name %>
+        <% else %>
+          Pay <%= collection[:balance] %> to <%= collection[:player].real_name %>
+        <% end %>
+      </li>
+    </ul>
+  </p>
+<% end %>
 <br>
+
+<h1>Pairings</h1>
 
 <h2>Grouped by people getting paid:</h2>
 <% @to_aggregate.each do |username, agg| %>
+  <% next if agg[:from].length == 0 %>
   <p>
     <%= username %> is owed <%= agg[:balance] %> and will get:
     <ul>
@@ -21,8 +39,9 @@
 
 <h2>Grouped by people paying out:</h2>
 <% @from_aggregate.each do |username, agg| %>
+  <% next if agg[:to].length == 0 %>
   <p>
-    <%= username %> owes <%= agg[:balance] %> and will pay out:
+    <%= username %> owes <%= agg[:balance].abs %> and will pay out:
     <ul>
       <% agg[:to].each do |to| %>
         <li>
