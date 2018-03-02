@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  username: MyString
+  date: 2018-03-02
+  balance: 1
+  transfer: 1
+
+two:
+  username: MyString
+  date: 2018-03-02
+  balance: 1
+  transfer: 1

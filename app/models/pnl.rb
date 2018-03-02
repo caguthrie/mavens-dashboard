@@ -1,0 +1,2 @@
+class Pnl < ApplicationRecord
+end
