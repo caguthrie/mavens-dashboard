@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180302201634) do
+ActiveRecord::Schema.define(version: 20180306002912) do
+
+  create_table "balances", force: :cascade do |t|
+    t.string   "username"
+    t.date     "date"
+    t.integer  "balance"
+    t.integer  "transfer"
+    t.boolean  "zeroed_out"
+    t.integer  "player_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["player_id"], name: "index_balances_on_player_id"
+  end
 
   create_table "friendships", force: :cascade do |t|
     t.integer  "player_id"
@@ -31,12 +43,13 @@ ActiveRecord::Schema.define(version: 20180302201634) do
   end
 
   create_table "pnls", force: :cascade do |t|
+    t.integer  "amount"
     t.string   "username"
     t.date     "date"
-    t.integer  "balance"
-    t.integer  "transfer"
+    t.integer  "player_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["player_id"], name: "index_pnls_on_player_id"
   end
 
 end

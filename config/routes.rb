@@ -6,4 +6,10 @@ Rails.application.routes.draw do
 
   get '/sync' => 'sync#index'
   get '/pairings' => 'pairings#index'
+
+  get '/pnl/fetch' => 'pnl#fetch'
+  get '/pnl/index' => 'pnl#index'
+  get '/pnl/daily' => 'pnl#daily'
+  get '/pnl/monthly' => 'pnl#monthly'
+  get '/pnl/yearly' => 'pnl#yearly'
 end

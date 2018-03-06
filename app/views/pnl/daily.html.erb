@@ -1,0 +1,25 @@
+<%= link_to 'Back to Main Menu', root_path %>
+
+<br/>
+<br/>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <% @headers.each do |header| %>
+        <th><%= header %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @rows.each do |row| %>
+      <tr>
+        <td><%= row['player'].real_name %> (<%= row['player'].username %>)</td>
+        <% @headers.each do |header| %>
+          <td><%= row[header].amount %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
