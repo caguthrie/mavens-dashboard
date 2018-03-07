@@ -1,5 +1,17 @@
 <h2>Rick's Mavens Dashboard</h2>
 
+<%= link_to 'View Daily p/l', {controller: 'pnl', action: 'daily', year: @latest_date.year, month: @latest_date.month}, method: :get, class: 'ui green button huge' %>
+<br/>
+<br/>
+<br/>
+<%= link_to 'View Monthly p/l', {controller: 'pnl', action: 'monthly', year: @latest_date.year}, method: :get, class: 'ui green button huge' %>
+<br/>
+<br/>
+<br/>
+<%= link_to 'View Yearly p/l', {controller: 'pnl', action: 'yearly'}, method: :get, class: 'ui green button huge' %>
+<br/>
+<br/>
+<br/>
 <%= button_to 'View/Edit Players', '/players', method: :get, class: 'ui green button huge' %>
 <br/>
 <br/>
