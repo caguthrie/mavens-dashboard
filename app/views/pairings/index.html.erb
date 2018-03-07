@@ -4,7 +4,7 @@
 
 
 
-<h1>To take care of at live game</h1>
+<h1>To take care of at live game:</h1>
 <% @collect_at_game.sort!{|a,b| a[:player].real_name <=> b[:player].real_name}.each do |collection| %>
   <p>
     <ul>
@@ -20,7 +20,7 @@
 <% end %>
 <br>
 
-<h1>Pairings</h1>
+<h1>Balances being taken care of via email:</h1>
 
 <h2>Grouped by people getting paid:</h2>
 <% @to_aggregate.each do |username, agg| %>

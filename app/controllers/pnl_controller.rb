@@ -7,6 +7,18 @@ class PnlController < ApplicationController
   def daily
     raw_data = Pnl.where("cast(strftime('%m', date) as int) = ?", params[:month].to_i).where("cast(strftime('%Y', date) as int) = ?", params[:year].to_i)
     grouped_data = raw_data.group_by{|row| row.username}.delete_if{|k,v| v.all?{|item| item.amount == 0}}
+    @month = params[:month].to_i
+    @months = ActiveRecord::Base.connection.execute(
+        "Select strftime('%m', date) as month " +
+            "from pnls " +
+            "group by strftime('%m', date)"
+    ).map{|d| d['month'].to_i}.uniq.sort
+    @year = params[:year]
+    @years = ActiveRecord::Base.connection.execute(
+        "Select strftime('%Y', date) as year " +
+            "from pnls " +
+            "group by strftime('%Y', date)"
+    ).map{|d| d['year']}
     @headers = raw_data.map{|d| d.date}.uniq.sort
     @rows = grouped_data.map do |username,v|
       ret = {}
@@ -22,10 +34,18 @@ class PnlController < ApplicationController
   def monthly
     raw_data = Pnl.where("cast(strftime('%Y', date) as int) = ?", params[:year].to_i)
     grouped_dates = raw_data.group_by {|d| d.date.beginning_of_month }
+    @year = params[:year]
+    @years = ActiveRecord::Base.connection.execute(
+        "Select strftime('%Y', date) as year " +
+            "from pnls " +
+            "group by strftime('%Y', date)"
+    ).map{|d| d['year']}
     @headers = grouped_dates.map{|k,v| k}.sort
     grouped_by_plaer_and_month = ActiveRecord::Base.connection.execute(
         "Select player_id, sum(amount) as amount, strftime('%m', date) as month " +
-        "from pnls group by strftime('%m', date), player_id"
+        "from pnls " +
+        "where cast(strftime('%Y', date) as int) = #{params[:year].to_i} " +
+        "group by strftime('%m', date), player_id "
     )
 
     @rows = []

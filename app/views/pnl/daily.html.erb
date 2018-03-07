@@ -3,6 +3,17 @@
 <br/>
 <br/>
 
+<%= form_tag '/pnl/daily', :method => 'get' do %>
+  Month: <%= select_tag 'month', options_for_select(@months, @month)%>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  Year: <%= select_tag 'year', options_for_select(@years, @year)%>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <%= submit_tag 'Go' %>
+<% end %>
+
+<br/>
+<br/>
+
 <div>
   <div class="left-header-table-container">
     <table>
