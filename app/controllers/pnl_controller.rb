@@ -1,7 +1,41 @@
+load 'http_request.rb'
+
 class PnlController < ApplicationController
   def index
     latest_date = Pnl.order('date DESC').limit(1).first.date
     redirect_to "/pnl/daily?year=#{latest_date.year}&month=#{latest_date.month}"
+  end
+
+  def transfer
+    @players = Player.all.sort{|a,b| a.real_name <=> b.real_name}
+  end
+
+  def make_transfer
+    config=YAML.load_file('secrets.yml')
+    from = Player.find(params[:from][:id])
+    to = Player.find(params[:to][:id])
+    amount = params[:amount].to_i
+    to_balance = Balance.where(player: to).order(:date).last
+    from_balance = Balance.where(player: from).order(:date).last
+    if amount == 0
+      redirect_to '/pnl/transfer', notice: "Please enter an amount."
+    elsif to_balance && from_balance
+      to_transfer_amount = to_balance.transfer ? to_balance.transfer + amount : amount
+
+      url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsIncBalance&Player=#{to.username}&Amount=#{amount}"
+      data = HttpRequest.get url
+      # TODO something to verify this actually worked
+      to_balance.update transfer: to_transfer_amount
+
+      from_balance_amount = from_balance.transfer ? from_balance.transfer - amount : -amount
+      url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsDecBalance&Player=#{from.username}&Amount=#{amount}"
+      data = HttpRequest.get url
+      # TODO something to verify this actually worked
+      from_balance.update transfer: from_balance_amount
+      redirect_to '/pnl/transfer', notice: "Success! Transferred #{amount} from #{from.real_name} to #{to.real_name}"
+    else
+      redirect_to '/pnl/transfer', notice: "Nothing done. Cannot find any balances."
+    end
   end
 
   def daily

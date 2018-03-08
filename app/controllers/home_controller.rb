@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   def index
-    @latest_date = Pnl.order('date DESC').limit(1).first.date
+    pnl = Pnl.order('date DESC').limit(1).first
+    @latest_date = pnl ? pnl.date : Date.today
   end
 end

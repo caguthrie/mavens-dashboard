@@ -12,4 +12,6 @@ Rails.application.routes.draw do
   get '/pnl/daily' => 'pnl#daily'
   get '/pnl/monthly' => 'pnl#monthly'
   get '/pnl/yearly' => 'pnl#yearly'
+  get '/pnl/transfer' => 'pnl#transfer'
+  post '/pnl/transfer' => 'pnl#make_transfer'
 end

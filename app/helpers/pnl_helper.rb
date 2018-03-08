@@ -22,7 +22,7 @@ module PnlHelper
       bal.player = player
       bal.save
 
-      yesterdays_balance = Balance.find_by(username: username, date: (Date.yesterday - 1))
+      yesterdays_balance = Balance.where(username: username).where("date < '#{Date.today}'").order('date DESC').limit(1).first
 
       pnl = Pnl.new
       pnl.username = username
@@ -30,11 +30,12 @@ module PnlHelper
       pnl.date = Date.today
 
       if yesterdays_balance && !yesterdays_balance.zeroed_out
-        pnl.amount = bal.balance - yesterdays_balance.balance
-      else
+        pnl.amount = bal.balance - yesterdays_balance.balance - (yesterdays_balance.transfer || 0)
+        pnl.save
+      elsif yesterdays_balance && yesterdays_balance.zeroed_out
         pnl.amount = bal.balance
+        pnl.save
       end
-      pnl.save
     end
   end
 end

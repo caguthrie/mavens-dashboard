@@ -1,0 +1,22 @@
+<%= link_to 'Back to Main Menu', root_path %>
+
+<br/>
+<br/>
+
+<%= form_tag '/pnl/transfer', :method => 'post' do %>
+  <%= label_tag :amount %>
+  $<%= number_field_tag 'amount' %>
+  <br/>
+  <br/>
+  <%= label_tag :from %>
+  <%= collection_select(:from, :id, @players, :id, :real_name, {}, {multiple: false}) %>
+  <br/>
+  <br/>
+  <%= label_tag :to %>
+  <%= collection_select(:to, :id, @players, :id, :real_name, {}, {multiple: false}) %>
+  <br/>
+  <br/>
+  <%= submit_tag 'Make Transfer' %>
+<% end %>
+
+<p id="notice"><%= notice %></p>
