@@ -2,8 +2,19 @@ load 'http_request.rb'
 
 class PnlController < ApplicationController
   def index
-    latest_date = Pnl.order('date DESC').limit(1).first.date
-    redirect_to "/pnl/daily?year=#{latest_date.year}&month=#{latest_date.month}"
+    pnl = Pnl.order('date DESC').limit(1).first
+    balance = Balance.order('date DESC').limit(1).first
+    @latest_pnl_date = pnl ? pnl.date : Date.today
+    @latest_balance_date = balance ? balance.date : Date.today
+  end
+
+  def calculate
+    date = Date.civil(params[:date]["date(1i)"].to_i,
+                      params[:date]["date(2i)"].to_i,
+                      params[:date]["date(3i)"].to_i)
+    use_any_latest_date = params[:use_any_latest_date] || false
+    result = helpers.create_new_pnl(date, use_any_latest_date)
+    redirect_to '/pnl', notice: result ? 'Success!' : 'Failed! Are you sure there is a balance on that date or the day prior?'
   end
 
   def transfer
@@ -119,5 +130,6 @@ class PnlController < ApplicationController
 
   def fetch
     helpers.fetch_and_save_balances
+    redirect_to '/pnl', notice: 'Success!'
   end
 end

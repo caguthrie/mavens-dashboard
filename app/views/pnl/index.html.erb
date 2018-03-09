@@ -1,0 +1,45 @@
+<%= link_to 'Back to Main Menu', root_path %>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<%= link_to 'View Daily p/l', {controller: 'pnl', action: 'daily', year: @latest_pnl_date.year, month: @latest_pnl_date.month}, method: :get %>
+<br/>
+<br/>
+<br/>
+<%= link_to 'View Monthly p/l', {controller: 'pnl', action: 'monthly', year: @latest_pnl_date.year}, method: :get %>
+<br/>
+<br/>
+<br/>
+<%= link_to 'View Yearly p/l', {controller: 'pnl', action: 'yearly'}, method: :get %>
+<br/>
+<br/>
+<br/>
+<%= button_to 'Manually retrieve balances and calculate p/l for today', {controller: 'pnl', action: 'fetch'}, method: :get, disabled: @latest_balance_date == Date.today%>
+<% if @latest_balance_date == Date.today %>
+  Already ran today
+<% end %>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+Manually calculate Pnl:
+<br/>
+<p>
+  <%= form_tag '/pnl/calculate', :method => 'get' do %>
+    <%= label_tag 'For date:' %>
+    <%= date_select 'date', 'date', selected: Date.today %>
+    <br/>
+    <br/>
+    Make pnl delta from any latest date before it, not just the prior date:
+    <%= check_box_tag 'use_any_latest_date'%>
+    <br/>
+    <br/>
+    <%= submit_tag 'Go' %>
+  <% end %>
+</p>
+<br/>
+<br/>
+<p id="notice"><%= notice %></p>

@@ -21,13 +21,29 @@ module PnlHelper
       player = Player.find_by(username: username)
       bal.player = player
       bal.save
+    end
+    create_new_pnl
+  end
 
-      yesterdays_balance = Balance.where(username: username).where("date < '#{Date.today}'").order('date DESC').limit(1).first
+  def create_new_pnl(date = Date.today, use_any_latest_date = false)
+    Player.all.each do |player|
+      username = player.username
+      bal = Balance.find_by(username: username, date: date)
+      yesterdays_balance = nil
+      if use_any_latest_date
+        yesterdays_balance = Balance.where(username: username).where("date < '#{date}'").order('date DESC').limit(1).first
+      else
+        yesterdays_balance = Balance.find_by(username: username, date: date - 1)
+      end
+
+      if !yesterdays_balance || !bal
+        return false
+      end
 
       pnl = Pnl.new
       pnl.username = username
       pnl.player = player
-      pnl.date = Date.today
+      pnl.date = date
 
       if yesterdays_balance && !yesterdays_balance.zeroed_out
         pnl.amount = bal.balance - yesterdays_balance.balance - (yesterdays_balance.transfer || 0)
@@ -37,5 +53,6 @@ module PnlHelper
         pnl.save
       end
     end
+    true
   end
 end

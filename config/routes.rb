@@ -8,10 +8,11 @@ Rails.application.routes.draw do
   get '/pairings' => 'pairings#index'
 
   get '/pnl/fetch' => 'pnl#fetch'
-  get '/pnl/index' => 'pnl#index'
+  get '/pnl' => 'pnl#index'
   get '/pnl/daily' => 'pnl#daily'
   get '/pnl/monthly' => 'pnl#monthly'
   get '/pnl/yearly' => 'pnl#yearly'
   get '/pnl/transfer' => 'pnl#transfer'
+  get '/pnl/calculate' => 'pnl#calculate'
   post '/pnl/transfer' => 'pnl#make_transfer'
 end

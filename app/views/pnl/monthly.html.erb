@@ -3,6 +3,11 @@
 <br/>
 <br/>
 
+<%= link_to 'Back to P/L Dashboard', '/pnl' %>
+
+<br/>
+<br/>
+
 <%= form_tag '/pnl/monthly', :method => 'get' do %>
   Year: <%= select_tag 'year', options_for_select(@years, @year)%>
   &nbsp;&nbsp;&nbsp;&nbsp;
