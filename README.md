@@ -8,7 +8,7 @@ A web solution for managing Mavens player lists and balance resolution
 2) Create `secrets.yml` file with the following:
     ```
     root: mavens url root
-    password: your password
+    password: mavens api password
     gmailAddress: your gmail account address
     gmailPassword: your gmail account password
     ccEmail: The email to cc all emails to
