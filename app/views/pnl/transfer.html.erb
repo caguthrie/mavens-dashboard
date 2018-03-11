@@ -3,11 +3,6 @@
 <br/>
 <br/>
 
-<%= link_to 'Back to P/L Dashboard', '/pnl' %>
-
-<br/>
-<br/>
-
 <%= form_tag '/pnl/transfer', :method => 'post' do %>
   <%= label_tag :amount %>
   $<%= number_field_tag 'amount' %>

@@ -16,30 +16,7 @@
 <br/>
 <br/>
 <br/>
-<%= button_to 'Manually retrieve balances and calculate p/l for today', {controller: 'pnl', action: 'fetch'}, method: :get, disabled: @latest_balance_date == Date.today%>
-<% if @latest_balance_date == Date.today %>
-  Already ran today
-<% end %>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-Manually calculate Pnl:
-<br/>
-<p>
-  <%= form_tag '/pnl/calculate', :method => 'get' do %>
-    <%= label_tag 'For date:' %>
-    <%= date_select 'date', 'date', selected: Date.today %>
-    <br/>
-    <br/>
-    Make pnl delta from any latest date before it, not just the prior date:
-    <%= check_box_tag 'use_any_latest_date'%>
-    <br/>
-    <br/>
-    <%= submit_tag 'Go' %>
-  <% end %>
-</p>
+<%= button_to "Manually retrieve balances and calculate p/l for today#{@latest_balance_date == Date.today ? ' (Already ran today)' : ''}", {controller: 'pnl', action: 'fetch'}, method: :get, disabled: @latest_balance_date == Date.today%>
 <br/>
 <br/>
 <p id="notice"><%= notice %></p>

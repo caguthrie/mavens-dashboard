@@ -4,6 +4,7 @@ class PlayersController < ApplicationController
   # GET /players
   # GET /players.json
   def index
+    helpers.sync_with_mavens
     @players = Player.all
   end
 

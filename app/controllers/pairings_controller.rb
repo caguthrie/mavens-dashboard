@@ -1,5 +1,6 @@
 class PairingsController < ApplicationController
   def index
+    helpers.sync_with_mavens
     result = helpers.make_pairings
     if result.is_a? String
       @result = result

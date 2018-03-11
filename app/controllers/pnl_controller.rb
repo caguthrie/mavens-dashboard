@@ -5,19 +5,11 @@ class PnlController < ApplicationController
     pnl = Pnl.order('date DESC').limit(1).first
     balance = Balance.order('date DESC').limit(1).first
     @latest_pnl_date = pnl ? pnl.date : Date.today
-    @latest_balance_date = balance ? balance.date : Date.today
-  end
-
-  def calculate
-    date = Date.civil(params[:date]["date(1i)"].to_i,
-                      params[:date]["date(2i)"].to_i,
-                      params[:date]["date(3i)"].to_i)
-    use_any_latest_date = params[:use_any_latest_date] || false
-    result = helpers.create_new_pnl(date, use_any_latest_date)
-    redirect_to '/pnl', notice: result ? 'Success!' : 'Failed! Are you sure there is a balance on that date or the day prior?'
+    @latest_balance_date = balance ? balance.date : nil
   end
 
   def transfer
+    helpers.sync_with_mavens
     @players = Player.all.sort{|a,b| a.real_name <=> b.real_name}
   end
 
@@ -129,6 +121,7 @@ class PnlController < ApplicationController
   end
 
   def fetch
+    helpers.sync_with_mavens
     helpers.fetch_and_save_balances
     redirect_to '/pnl', notice: 'Success!'
   end
