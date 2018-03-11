@@ -26,22 +26,23 @@ class PairingsController < ApplicationController
     end
 
     pairings.each do |pairing|
-      # Fire off emails to everyone
-      # PlayerMailer.pairing_email(pairing).deliver!
+      # Fire off email for this pairing
+      PlayerMailer.pairing_email(pairing).deliver!
 
-      # Adjust balances with mavens API
+      # Adjust balances with mavens API for this pairing
       pairing['from'].each do |from|
-        # url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsIncBalance&Player=#{from['username']}&Amount=#{from['amount']}"
-        # data = HttpRequest.get url
+        url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsIncBalance&Player=#{from['username']}&Amount=#{from['amount']}"
+        data = HttpRequest.get url
         puts "Increment $#{from['amount']} from #{from['username']}'s balance'"
       end
 
       pairing['to'].each do |to|
-        # url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsDecBalance&Player=#{to['username']}&Amount=#{to['amount']}"
-        # data = HttpRequest.get url
+        url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsDecBalance&Player=#{to['username']}&Amount=#{to['amount']}"
+        data = HttpRequest.get url
         puts "Decrement $#{to['amount']} from #{to['username']}'s balance'"
       end
     end
 
+    redirect_to root_path, notice: 'Success! Emailed everyone and zeroed out balances in local database and mavens.'
   end
 end
