@@ -7,17 +7,17 @@
     <% if @to.length == 1 %>
       <% @from.each do |from_payment| %>
         <p>
-          <%= from_payment[:player].real_name %> please pay
-          <%= @to[0][:player].real_name %>
-          $<%= from_payment[:amount] %>
+          <%= from_payment['player']['real_name'] %> please pay
+          <%= @to[0]['player']['real_name'] %>
+          $<%= from_payment['amount'] %>
         </p>
       <% end %>
     <% else %>
       <% @to.each do |to_payment| %>
         <p>
-          <%= @from[0][:player].real_name %> please pay
-          <%= to_payment[:player].real_name %>
-          $<%= to_payment[:amount] %>
+          <%= @from[0]['player']['real_name'] %> please pay
+          <%= to_payment['player']['real_name'] %>
+          $<%= to_payment['amount'] %>
         </p>
       <% end %>
     <% end %>

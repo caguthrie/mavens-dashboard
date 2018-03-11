@@ -51,3 +51,7 @@
     </ul>
   </p>
 <% end %>
+<br/>
+<br/>
+<%= button_to 'Send emails and zero out balances (no turning back!)', '/pairings/action', method: :post, params: {pairings: @all_pairings.to_json} %>
+<div></div>

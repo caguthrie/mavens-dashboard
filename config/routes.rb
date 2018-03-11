@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   get '/sync' => 'sync#index'
   get '/pairings' => 'pairings#index'
+  post '/pairings/action' => 'pairings#action'
 
   get '/pnl/fetch' => 'pnl#fetch'
   get '/pnl' => 'pnl#index'

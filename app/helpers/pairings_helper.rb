@@ -83,8 +83,6 @@ module PairingsHelper
       end
 
       all_pairings.push pairing
-      # PlayerMailer.pairing_email(pairing).deliver!
-      # puts pairing
     end
     collect_at_game = pb_going_to_game.select{|pb| pb[:balance] != 0}
     {
