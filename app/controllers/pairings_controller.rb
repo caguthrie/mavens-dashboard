@@ -18,6 +18,14 @@ class PairingsController < ApplicationController
   def action
     config=YAML.load_file('secrets.yml')
     pairings = JSON.parse params[:pairings]
+    at_game_offsets = JSON.parse params[:collect_at_game]
+
+    # Adjust balances with mavens API for each Player attending the game
+    at_game_offsets.each do |offset|
+      url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=Accounts#{offset['balance'] < 0 ? 'Inc' : 'Dec'}Balance&Player=#{offset['username']}&Amount=#{offset['balance'].abs}"
+      data = HttpRequest.get url
+      puts "#{offset['balance'] < 0 ? 'Inc' : 'Dec'}rement $#{offset['balance']} from #{offset['username']}'s balance'"
+    end
 
     # Reset next p/l generation in the database
     latest_balance_date = Balance.order('date DESC').limit(1).first.date

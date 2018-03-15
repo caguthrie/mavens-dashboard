@@ -53,5 +53,5 @@
 <% end %>
 <br/>
 <br/>
-<%= button_to 'Send emails and zero out balances (no turning back!)', '/pairings/action', method: :post, params: {pairings: @all_pairings.to_json} %>
+<%= button_to 'Send emails and zero out balances (no turning back!)', '/pairings/action', method: :post, params: {collect_at_game: @collect_at_game.to_json, pairings: @all_pairings.to_json} %>
 <div></div>
