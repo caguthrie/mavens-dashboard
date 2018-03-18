@@ -41,10 +41,10 @@ module PnlHelper
       pnl.date = date
 
       if !yesterdays_balance.zeroed_out
-        pnl.amount = bal.balance - yesterdays_balance.balance - (yesterdays_balance.transfer || 0)
+        pnl.amount = (bal.balance - (bal.transfer || 0)) - (yesterdays_balance.balance - (yesterdays_balance.transfer || 0))
         pnl.save
       else
-        pnl.amount = bal.balance
+        pnl.amount = bal.balance - (bal.transfer || 0)
         pnl.save
       end
     end

@@ -27,10 +27,10 @@ class PairingsController < ApplicationController
       puts "#{offset['balance'] < 0 ? 'Inc' : 'Dec'}rement $#{offset['balance']} from #{offset['username']}'s balance'"
     end
 
-    # Reset next p/l generation in the database
+    # Reset next p/l generation in the database and reset transfers
     latest_balance_date = Balance.order('date DESC').limit(1).first.date
     Balance.where(date: latest_balance_date).each do |balance|
-      balance.update(zeroed_out: true)
+      balance.update(zeroed_out: true, transfer: 0)
     end
 
     pairings.each do |pairing|
