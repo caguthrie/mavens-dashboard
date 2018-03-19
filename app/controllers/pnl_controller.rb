@@ -28,13 +28,13 @@ class PnlController < ApplicationController
       url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsIncBalance&Player=#{to.username}&Amount=#{amount}"
       data = HttpRequest.get url
       # TODO something to verify this actually worked
-      to_balance.update transfer: to_transfer_amount
+      to_balance.update(transfer: to_transfer_amount, balance: to_balance.balance + amount)
 
       from_balance_amount = from_balance.transfer ? from_balance.transfer - amount : -amount
       url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=AccountsDecBalance&Player=#{from.username}&Amount=#{amount}"
       data = HttpRequest.get url
       # TODO something to verify this actually worked
-      from_balance.update transfer: from_balance_amount
+      from_balance.update(transfer: from_balance_amount, balance: from_balance.balance - amount)
       redirect_to '/pnl/transfer', notice: "Success! Transferred #{amount} from #{from.real_name} to #{to.real_name}"
     else
       redirect_to '/pnl/transfer', notice: "Nothing done. Cannot find any balances."
