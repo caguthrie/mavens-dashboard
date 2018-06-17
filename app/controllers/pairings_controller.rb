@@ -33,9 +33,24 @@ class PairingsController < ApplicationController
       balance.update(zeroed_out: true, transfer: 0)
     end
 
+    send_email_error_count = 0
     pairings.each do |pairing|
       # Fire off email for this pairing
-      PlayerMailer.pairing_email(pairing).deliver!
+      begin
+        PlayerMailer.pairing_email(pairing).deliver!
+      rescue Exception => e
+        if send_email_error_count < 5
+          send_email_error_count += 1
+          puts "Attempt #{send_email_error_count} (of 5 max times) to send email failed, sleeping for 10 seconds and trying again."
+          sleep(10)
+          redo
+        else
+          puts e.message
+          puts e.backtrace.inspect
+          raise 'Unable to send email.  Tried 5 times!'
+        end
+      end
+      send_email_error_count = 0
 
       # Adjust balances with mavens API for this pairing
       pairing['from'].each do |from|
