@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+  </head>
+  <body>
+    <p>
+      <% if @offset['balance'] > 0 %>
+        <%= @offset['player']['real_name'] %>: You will collect $<%= @offset['balance'] %> at the game.
+      <% else %>
+        <%= @offset['player']['real_name'] %>: Please bring $<%= @offset['balance'].abs %> to pay at the game, in addition to your tournament buyin.  Large bills are appreciated.
+      <% end %>
+    </p>
+    <br/>
+    <p>
+      See you at the game! Please note that all balances are immediately reflected as paid online.
+    </p>
+  </body>
+</html>

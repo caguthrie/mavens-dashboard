@@ -20,8 +20,24 @@ class PairingsController < ApplicationController
     pairings = JSON.parse params[:pairings]
     at_game_offsets = JSON.parse params[:collect_at_game]
 
+    send_email_error_count = 0
     # Adjust balances with mavens API for each Player attending the game
     at_game_offsets.each do |offset|
+      begin
+        PlayerMailer.going_to_game_email(offset).deliver!
+      rescue Exception => e
+        if send_email_error_count < 5
+          send_email_error_count += 1
+          puts "Attempt #{send_email_error_count} (of 5 max times) to send email failed, sleeping for 15 seconds and trying again."
+          sleep(15)
+          redo
+        else
+          puts e.message
+          puts e.backtrace.inspect
+          raise 'Unable to send email.  Tried 5 times!'
+        end
+      end
+      send_email_error_count = 0
       url = "#{config['root']}/api?password=#{config['password']}&JSON=Yes&Command=Accounts#{offset['balance'] < 0 ? 'Inc' : 'Dec'}Balance&Player=#{offset['username']}&Amount=#{offset['balance'].abs}"
       data = HttpRequest.get url
       puts "#{offset['balance'] < 0 ? 'Inc' : 'Dec'}rement $#{offset['balance']} from #{offset['username']}'s balance'"
@@ -41,8 +57,8 @@ class PairingsController < ApplicationController
       rescue Exception => e
         if send_email_error_count < 5
           send_email_error_count += 1
-          puts "Attempt #{send_email_error_count} (of 5 max times) to send email failed, sleeping for 10 seconds and trying again."
-          sleep(10)
+          puts "Attempt #{send_email_error_count} (of 5 max times) to send email failed, sleeping for 15 seconds and trying again."
+          sleep(15)
           redo
         else
           puts e.message
