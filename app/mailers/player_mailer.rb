@@ -14,4 +14,14 @@ class PlayerMailer < ApplicationMailer
     @offset = offset
     mail(to: offset['player']['email'], cc: secrets["ccEmail"], subject: "Online Settlement at the live game #{Date.today.strftime("%B")} (Balance as of #{Date.today})")
   end
+
+  def ban_email(player_name)
+    secrets=YAML.load_file('secrets.yml')
+    mail(to: secrets["ccEmail"], subject: "#{player_name} has been banned from your game")
+  end
+
+  def ban_failed_email(player_name)
+    secrets=YAML.load_file('secrets.yml')
+    mail(to: secrets["ccEmail"], subject: "Tried to ban #{player_name}, but failed!")
+  end
 end

@@ -66,6 +66,12 @@ class PlayersController < ApplicationController
     params.require(:players).permit!.each do |key, value|
       player = Player.find(key.to_i)
       player.going_to_game = value["going_to_game"].to_i
+      player.restricted = value["restricted"].to_i
+      if player.restricted
+        player.limit = (value["limit"] || 0).to_i
+      else
+        player.limit = nil
+      end
       player.save
     end
     redirect_to players_path

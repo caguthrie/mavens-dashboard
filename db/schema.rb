@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180306002912) do
+ActiveRecord::Schema.define(version: 20180814012552) do
 
   create_table "balances", force: :cascade do |t|
     t.string   "username"
@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 20180306002912) do
     t.boolean  "going_to_game"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.boolean  "restricted"
+    t.integer  "limit"
   end
 
   create_table "pnls", force: :cascade do |t|
