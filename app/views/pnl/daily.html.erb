@@ -49,7 +49,11 @@
       <% @rows.each do |row| %>
         <tr>
           <% @headers.each do |header| %>
-            <td class="<%= row[header].amount > 0 ? 'green-bg' : (row[header].amount < 0 ? 'red-bg' : '') %>"><%= row[header].amount %></td>
+            <% if row[header] != nil %>
+              <td class="<%= row[header].amount > 0 ? 'green-bg' : (row[header].amount < 0 ? 'red-bg' : '') %>"><%= row[header].amount %></td>
+            <% else %>
+              <td>0</td>
+            <% end %>
           <% end %>
         </tr>
       <% end %>
