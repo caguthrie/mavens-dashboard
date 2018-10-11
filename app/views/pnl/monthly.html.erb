@@ -47,7 +47,11 @@
       <% @rows.each do |row| %>
         <tr>
           <% @headers.each do |header| %>
-            <td class="<%= row[header.strftime('%m')]['amount'] > 0 ? 'green-bg' : (row[header.strftime('%m')]['amount'] < 0 ? 'red-bg' : '') %>"><%= row[header.strftime('%m')]['amount'] %></td>
+            <% if row[header.strftime('%m')] != nil %>
+              <td class="<%= row[header.strftime('%m')]['amount'] > 0 ? 'green-bg' : (row[header.strftime('%m')]['amount'] < 0 ? 'red-bg' : '') %>"><%= row[header.strftime('%m')]['amount'] %></td>
+            <% else %>
+              <td>0</td>
+            <% end %>
           <% end %>
         </tr>
       <% end %>
