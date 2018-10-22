@@ -15,7 +15,8 @@
         <th>Going to game</th>
         <th>Restricted</th>
         <th>Limit</th>
-        <th colspan="3"></th>
+        <th>Friends</th>
+        <th colspan="2"></th>
       </tr>
     </thead>
 
@@ -29,9 +30,9 @@
               <td><%= p.check_box :going_to_game %></td>
               <td><%= p.check_box :restricted %></td>
               <td><%= p.number_field :limit %></td>
+              <td><%= player.friends.map{|f| f.real_name}.join(', ') %></td>
               <td><%= link_to 'Show', player %></td>
               <td><%= link_to 'Edit', edit_player_path(player) %></td>
-              <td><%= link_to 'Destroy', player, method: :delete, data: { confirm: 'Are you sure?' } %></td>
             </tr>
           <% end %>
         <% end %>

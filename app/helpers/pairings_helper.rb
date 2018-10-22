@@ -36,10 +36,15 @@ module PairingsHelper
       b[:balance].abs <=> a[:balance].abs
     end
 
-    pb_not_going_to_game = non_zeros.select{|player_balance| !player_balance[:player].going_to_game}
-    pb_going_to_game = non_zeros.select{|player_balance| player_balance[:player].going_to_game}
-    pb_not_going_to_game.each do |pb1|
+    priority_players = ['Chrisman', 'Riclesb']
 
+    pb_not_going_to_game = non_zeros.select{|player_balance| !player_balance[:player].going_to_game}
+    pb_going_to_game = non_zeros.select{|player_balance| player_balance[:player].going_to_game && !priority_players.include?(player_balance[:player].username)}
+    pb_going_to_game_priority = non_zeros.select{|player_balance| player_balance[:player].going_to_game && priority_players.include?(player_balance[:player].username)}
+
+    # This loop deals with friends first
+    pb_not_going_to_game.size.times do |i|
+      pb1 = pb_not_going_to_game[i]
       type = 'winner'
 
       if pb1[:balance] < 0
@@ -51,14 +56,8 @@ module PairingsHelper
           from: []
       }
 
-      # Pair off against friends first
+      # Pair off against friends
       pair_off(pb1, pb_not_going_to_game.select{|pb2| pb1[:player].friends.include? pb2[:player]}, player_pairing, pairing)
-
-      # Pair off against everyone else not going to the game
-      pair_off(pb1, pb_not_going_to_game, player_pairing, pairing)
-
-      # Pair off against people coming to the game if there is anything left
-      pair_off(pb1, pb_going_to_game, player_pairing, pairing)
 
       if type == 'winner'
         pairing[:to].push player_pairing
@@ -84,7 +83,66 @@ module PairingsHelper
 
       all_pairings.push pairing
     end
-    collect_at_game = pb_going_to_game.select{|pb| pb[:balance] != 0}
+
+    # This loop deals with non-friends
+    loop do
+      # Re-sort players not going to the game
+      pb_not_going_to_game.sort! do |a, b|
+        b[:balance].abs <=> a[:balance].abs
+      end
+
+      pb1 = pb_not_going_to_game[0]
+
+      if pb1[:balance] == 0
+        break
+      end
+
+      type = 'winner'
+
+      if pb1[:balance] < 0
+        type = 'loser'
+      end
+      player_pairing = {player: pb1[:player], amount: 0, username: pb1[:username]}
+      pairing = {
+          to: [],
+          from: []
+      }
+
+      # Pair off against everyone else not going to the game
+      pair_off(pb1, pb_not_going_to_game, player_pairing, pairing)
+
+      # Pair off against people coming to the game
+      pair_off(pb1, pb_going_to_game, player_pairing, pairing)
+
+      # Pair off against priority people coming to the game if there is anything left
+      pair_off(pb1, pb_going_to_game_priority, player_pairing, pairing)
+
+      if type == 'winner'
+        pairing[:to].push player_pairing
+      else
+        pairing[:from].push player_pairing
+      end
+
+      # If no pairing, go to next
+      next if pairing[:to].length == 0 || pairing[:from].length == 0
+
+      # Crazy logic to get some data models that actually make the view easy to work with
+      if pairing[:to].length == 1
+        pairing[:from].each do |pb_from|
+          to_aggregate[pairing[:to][0][:username]][:from].push(pb_from)
+          from_aggregate[pb_from[:username]][:to].push({username: pairing[:to][0][:username], player: pairing[:to][0][:player], amount: pb_from[:amount]})
+        end
+      elsif pairing[:from].length == 1
+        pairing[:to].each do |pb_to|
+          from_aggregate[pairing[:from][0][:username]][:to].push(pb_to)
+          to_aggregate[pb_to[:username]][:from].push({username: pairing[:from][0][:username], player: pairing[:from][0][:player], amount: pb_to[:amount]})
+        end
+      end
+
+      all_pairings.push pairing
+    end
+
+    collect_at_game = pb_going_to_game.concat(pb_going_to_game_priority).select{|pb| pb[:balance] != 0}
     {
       all_pairings: all_pairings,
       to_aggregate: to_aggregate,
