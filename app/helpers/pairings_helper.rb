@@ -88,12 +88,12 @@ module PairingsHelper
     loop do
       # Re-sort players not going to the game
       pb_not_going_to_game.sort! do |a, b|
-        b[:balance].abs <=> a[:balance].abs
+        a[:balance].abs <=> b[:balance].abs
       end
 
-      pb1 = pb_not_going_to_game[0]
+      pb1 = pb_not_going_to_game.find{|p| p[:balance] != 0 }
 
-      if pb1[:balance] == 0
+      unless pb1
         break
       end
 
