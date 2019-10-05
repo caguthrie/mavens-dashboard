@@ -32,7 +32,7 @@ module PnlHelper
       yesterdays_balance = Balance.where(username: username).where("date < '#{date}'").order('date DESC').limit(1).first
 
       if !yesterdays_balance || !bal
-        return false
+        next
       end
 
       pnl = Pnl.new

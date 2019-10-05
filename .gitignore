@@ -23,3 +23,5 @@
 .idea/
 
 secrets.yml
+
+.DS_Store
